@@ -8,7 +8,11 @@ const cookieParser = require("cookie-parser");
 const config = require("./config.json");
 
 // app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
-app.use(cors());
+const corsOptions = {
+  origin: "http://test.skyofseoul.synology.me", // 허용할 출처
+  credentials: true, // 자격 증명 허용
+};
+app.use(cors(corsOptions));
 app.use(express.json()); /* JSON 형식으로 반환 */
 app.use(cookieParser());
 
