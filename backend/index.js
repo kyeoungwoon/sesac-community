@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const config = require("./config.json");
 
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+app.use(cors({ credentials: true }));
 app.use(express.json()); /* JSON 형식으로 반환 */
 app.use(cookieParser());
 
