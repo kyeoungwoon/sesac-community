@@ -14,6 +14,10 @@ app.use(cookieParser());
 mongoose.connect(config.db_string);
 const secret = config.jwt_key;
 
+app.get("/test", (req, res) => {
+  res.send("All - Good !")
+})
+
 /* POST 방식으로 회원가입 API 열어주기 */
 app.post("/register", async (req, res) => {
   const { username, password } = req.body;
@@ -61,6 +65,6 @@ app.post("/logout", (req, res) => {
   res.cookie("token", "").json("");
 });
 
-app.listen(7777, () => {
-  console.log("Server is running on http://localhost:7777");
+app.listen(40000, () => {
+  console.log("Server is running");
 });
