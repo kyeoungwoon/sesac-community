@@ -16,12 +16,12 @@ mongoose.connect(config.db_string);
 const secret = config.jwt_key;
 
 app.get("/test", (req, res) => {
-  res.send("All - Good !")
-})
+  res.send("All - Good !");
+});
 
 app.get("/", (req, res) => {
-  res.send("Need something more on your url ~")
-})
+  res.send("Need something more on your url ~");
+});
 
 /* POST 방식으로 회원가입 API 열어주기 */
 app.post("/register", async (req, res) => {
