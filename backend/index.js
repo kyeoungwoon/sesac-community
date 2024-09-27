@@ -7,7 +7,8 @@ const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const config = require("./config.json");
 
-app.use(cors({ credentials: true }));
+// app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+app.use(cors());
 app.use(express.json()); /* JSON 형식으로 반환 */
 app.use(cookieParser());
 
@@ -16,6 +17,10 @@ const secret = config.jwt_key;
 
 app.get("/test", (req, res) => {
   res.send("All - Good !")
+})
+
+app.get("/", (req, res) => {
+  res.send("Need something more on your url ~")
 })
 
 /* POST 방식으로 회원가입 API 열어주기 */
@@ -65,6 +70,6 @@ app.post("/logout", (req, res) => {
   res.cookie("token", "").json("");
 });
 
-app.listen(40000, () => {
+app.listen(7777, () => {
   console.log("Server is running");
 });
