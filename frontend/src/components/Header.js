@@ -7,7 +7,7 @@ export default function Header() {
   const { userInfo, setUserInfo } = useContext(UserContext);
 
   useEffect(() => {
-    fetch(API.URL, {
+    fetch(API.URL + "/profile", {
       credentials: "include",
     }).then((response) => {
       if (response.ok) {
