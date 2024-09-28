@@ -7,7 +7,7 @@ export default function Header() {
   const { userInfo, setUserInfo } = useContext(UserContext);
   /* 페이지가 로드되면서 자동으로 profile API 호출 */
   useEffect(() => {
-    fetch(API.URL, {
+    fetch(API.URL + "/profile", {
       credentials: "include",
     }).then((response) => {
       /* 서버로부터 전달 받은 값으로 username 초기화 */
