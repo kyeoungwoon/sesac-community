@@ -5,17 +5,19 @@ const API = require("../configs/api.json");
 
 export default function Header() {
   const { userInfo, setUserInfo } = useContext(UserContext);
-  /* 페이지가 로드되면서 자동으로 profile API 호출 */
+
   useEffect(() => {
     fetch(API.URL, {
       credentials: "include",
     }).then((response) => {
-      /* 서버로부터 전달 받은 값으로 username 초기화 */
-      response.json().then((userInfo) => {
-        setUserInfo(userInfo);
-      });
+      if (response.ok) {
+        console.log("RESPONSE OK");
+        response.json().then((userInfo) => {
+          setUserInfo(userInfo);
+        });
+      }
     });
-  }, []); /* 빈 배열로 useEffect 무한 루프 문제 해결 */
+  }, [setUserInfo]);
 
   function logout() {
     fetch(API.URL + "/logout", {
