@@ -3,6 +3,8 @@ import { useEffect, useContext } from "react";
 import { UserContext } from "../UserContext";
 const API = require("../configs/api.json");
 
+// git test 2
+
 export default function Header() {
   const { userInfo, setUserInfo } = useContext(UserContext);
 
