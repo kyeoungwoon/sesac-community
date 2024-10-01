@@ -6,6 +6,9 @@ const User = require("./models/User");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const config = require("./config.json");
+const multer = require("multer");
+const uploadMiddleware = multer({ dest: "uploaded/" });
+const fs = require("fs");
 
 // app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 const corsOptions = {
@@ -15,17 +18,10 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json()); /* JSON 형식으로 반환 */
 app.use(cookieParser());
+app.use("/uploaded", express.static(__dirname + "/uploaded"));
 
 mongoose.connect(config.db_string);
 const secret = config.jwt_key;
-
-app.get("/test", (req, res) => {
-  res.send("All - Good !");
-});
-
-app.get("/", (req, res) => {
-  res.send("Need something more on your url ~");
-});
 
 /* POST 방식으로 회원가입 API 열어주기 */
 app.post("/register", async (req, res) => {
@@ -72,6 +68,42 @@ app.get("/profile", (req, res) => {
 
 app.post("/logout", (req, res) => {
   res.cookie("token", "").json("");
+});
+
+app.post("/post", uploadMiddleware.single("file"), async (req, res) => {
+  const { originalname, path } = req.file;
+  const parts = originalname.split(".");
+  const ext = parts[parts.length - 1];
+  const newPath = path + "." + ext;
+  fs.renameSync(path, newPath);
+
+  const token = req.cookies.token;
+  jwt.verify(token, secret, {}, async (err, info) => {
+    if (err) throw err;
+    const { title, summary, content } = req.body;
+    const result = await Post.create({
+      title,
+      summary,
+      content,
+      cover: newPath,
+      author: info.id,
+    });
+    res.json(result);
+  });
+});
+
+app.get("/post", async (req, res) => {
+  const posts = await Post.find()
+    .populate("author", ["username"])
+    .sort({ createdAt: -1 })
+    .limit(20);
+  res.json(posts);
+});
+
+app.get("/post/:id", async (req, res) => {
+  const { id } = req.params;
+  const postDoc = await Post.findById(id);
+  res.json(postDoc);
 });
 
 app.listen(7777, () => {
