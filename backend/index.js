@@ -2,7 +2,10 @@ const express = require("express");
 const cors = require("cors"); /* CORS 오류 해결 */
 const app = express(); /* Express 서버 객체 초기화 */
 const mongoose = require("mongoose");
+
 const User = require("./models/User");
+const Post = require("./models/Post");
+
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const config = require("./config.json");
