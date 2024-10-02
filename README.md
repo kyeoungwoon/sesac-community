@@ -1,7 +1,7 @@
 #### Prepare the Source Codes
 
 <pre>
-git clone https://github.com/ndb7967/community
+git clone https://github.com/kyeoungwoon/sesac-community.git
 </pre>
 
 #### Prepare the Configuration File
@@ -14,22 +14,29 @@ git clone https://github.com/ndb7967/community
 }
 </pre>
 
+* Edit the <code>frontend/src/configs/api.json</code> file
+  <pre>
+{
+    "URL": "{YOUR BACKEND URL}"
+}
+  </pre>
+
 #### Install and Start the Server Application
 
 <pre>
 cd backend
-yarn install
-nodemon index.js
+npm install
+npm run start
 </pre>
 
 #### Install and Start the Client Application
 
 <pre>
 cd frontend
-yarn install
-yarn start
+npm install
+npm start
 </pre>
 
 #### Usage
 
-* Connect the website <code>http://localhost:3000/</code>.
+* Connect the website <code>http://YOUR.WEBSITE/</code>.
