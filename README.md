@@ -16,9 +16,9 @@ git clone https://github.com/kyeoungwoon/sesac-community.git
 
 * Edit the <code>frontend/src/configs/api.json</code> file
   <pre>
-{
-    "URL": "{YOUR BACKEND URL}"
-}
+    {
+        "URL": "{YOUR BACKEND URL}"
+    }
   </pre>
 
 #### Install and Start the Server Application
