@@ -15,7 +15,11 @@ const fs = require("fs");
 
 // app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 const corsOptions = {
-  origin: "http://test.skyofseoul.synology.me", // 허용할 출처
+  origin: [
+    "http://test.skyofseoul.synology.me",
+    "https://test.skyofseoul.synology.me",
+    "http://localhost:3000",
+  ], // 허용할 출처
   credentials: true, // 자격 증명 허용
 };
 app.use(cors(corsOptions));
@@ -74,39 +78,68 @@ app.post("/logout", (req, res) => {
 });
 
 app.post("/post", uploadMiddleware.single("file"), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: "File not uploaded" });
+  }
+
   const { originalname, path } = req.file;
   const parts = originalname.split(".");
   const ext = parts[parts.length - 1];
   const newPath = path + "." + ext;
-  fs.renameSync(path, newPath);
 
-  const token = req.cookies.token;
-  jwt.verify(token, secret, {}, async (err, info) => {
-    if (err) throw err;
-    const { title, summary, content } = req.body;
-    const result = await Post.create({
-      title,
-      summary,
-      content,
-      cover: newPath,
-      author: info.id,
+  // 비동기적 파일명 변경
+  fs.rename(path, newPath, (err) => {
+    if (err) {
+      return res.status(500).json({ error: "File rename failed" });
+    }
+
+    const token = req.cookies.token;
+    jwt.verify(token, secret, {}, async (err, info) => {
+      if (err) {
+        return res.status(401).json({ error: "Unauthorized" });
+      }
+
+      const { title, summary, content } = req.body;
+
+      try {
+        const result = await Post.create({
+          title,
+          summary,
+          content,
+          cover: newPath,
+          author: info.id,
+        });
+        res.json(result);
+      } catch (err) {
+        res.status(500).json({ error: "Failed to create post" });
+      }
     });
-    res.json(result);
   });
 });
 
 app.get("/post", async (req, res) => {
-  const posts = await Post.find()
-    .populate("author", ["username"])
-    .sort({ createdAt: -1 })
-    .limit(20);
-  res.json(posts);
+  try {
+    const posts = await Post.find()
+      .populate("author", ["username"])
+      .sort({ createdAt: -1 })
+      .limit(20);
+    res.json(posts);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch posts" });
+  }
 });
 
 app.get("/post/:id", async (req, res) => {
   const { id } = req.params;
-  const postDoc = await Post.findById(id);
-  res.json(postDoc);
+  try {
+    const postDoc = await Post.findById(id);
+    if (!postDoc) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+    res.json(postDoc);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch post" });
+  }
 });
 
 app.listen(7777, () => {
